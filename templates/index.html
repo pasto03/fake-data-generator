@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake Data Generator</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="mainContainer">
+        <h1>Fake Data Generator</h1>
+
+        <div class="inputContainer">
+                <input id="inputCols" type="text" placeholder="Enter column names separated using ','">
+                <p id="inputPrompt" style="visibility: hidden;"></p>
+        </div> 
+    </div>
+
+    <div class="result">
+        <h2>Generated Result:</h2>
+        <button id="downloadBtn" style="display: none;">Download</button>
+    </div>
+    
+    <div id="loader"></div>
+    <table>
+    </table>
+
+    <script src="static/script.js"></script>
+    
+</body>
+</html>

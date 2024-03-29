@@ -1,0 +1,10 @@
+owner_name,phone_number[13 digits],car_make,model,year,milleage
+John Doe,1234567890123,Toyota,Camry,2015,60000
+Jane Smith,3456789012345,Honda,Civic,2017,45000
+Michael Johnson,5678901234567,Ford,Focus,2018,30000
+Sarah Brown,7890123456789,Chevrolet,Malibu,2016,55000
+David Lee,9012345678901,Nissan,Altima,2019,20000
+Emily Taylor,1234567890123,Toyota,Corolla,2014,70000
+Daniel Clark,4567890123456,Honda,Accord,2018,35000
+Laura Martinez,6789012345678,Ford,Fusion,2017,40000
+Brian Anderson,8901234567890,Chevrolet,Cruze,2015,60000
