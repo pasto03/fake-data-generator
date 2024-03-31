@@ -1,18 +1,10 @@
 from openai import OpenAI
-import openai
-
-import time
-
-import requests
-import os
-
 import json
 
-OPENAI_API_KEY = open("openai_api_key").read()
-client = OpenAI(api_key=OPENAI_API_KEY)
 
-
-def generate_csv(columns:str, nrows:int, model="gpt-3.5-turbo", max_tokens=512, temperature=0, stream=True):
+def generate_csv(columns:str, nrows:int, OPENAI_API_KEY, model="gpt-3.5-turbo", 
+                 max_tokens=512, temperature=0, stream=True):
+    client = OpenAI(api_key=OPENAI_API_KEY)
     prompt = "Columns: {}\n" \
              "Number of results: {} rows".format(columns, nrows)
     if nrows > 30:
@@ -25,15 +17,18 @@ def generate_csv(columns:str, nrows:int, model="gpt-3.5-turbo", max_tokens=512, 
         {"role": "user", "content": prompt}
     ]
 
-    response = client.chat.completions.create(
-        model=model,
-        stream=stream,
-        max_tokens=max_tokens,
-        messages=messages,
-        temperature=temperature
-    )
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            stream=stream,
+            max_tokens=max_tokens,
+            messages=messages,
+            temperature=temperature
+        )
 
-    return response, messages
+        return response, messages
+    except:
+        return "e", ""
 
 
 def yield_rows(response):
@@ -46,7 +41,8 @@ def yield_rows(response):
             if chunk == "\n":
 #                 outputs.append(row)
                 if i != 0:
-                    yield json.dumps({"text": row}) + "\n\n"
+                    r = {"text": row}
+                    yield f"{json.dumps(r)}\n\n"
                 else:
                     i += 1
                 row = ""
@@ -55,7 +51,10 @@ def yield_rows(response):
 
 
 if __name__ == "__main__":
-    response, messages = generate_csv("name, student_id[7 digit int], email, field_of_study, academic_year[1-4]", 
-                                      nrows=10, max_tokens=512)
-    for row in yield_rows(response):
-        print(row)
+    client = OpenAI(api_key="")
+    print(client)
+    # OPENAI_API_KEY = open("openai_api_key").read()
+    # response, messages = generate_csv(columns="name, student_id[7 digit int], email, field_of_study, academic_year[1-4]", 
+    #                                   nrows=10, OPENAI_API_KEY=OPENAI_API_KEY, max_tokens=512)
+    # for row in yield_rows(response):
+    #     print(row)

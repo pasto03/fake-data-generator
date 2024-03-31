@@ -5,22 +5,35 @@ $(document).ready(function() {
         // generate csv from columns given
         if (event.key == "Enter") {
             let columns = $("#inputCols").val();
-            
-            
+
             console.log("input: "+columns);
             
             // create table head
             let headHTML = parseTable(columns, "th");
             $("table").html(headHTML);
 
-            // request table rows from server
-            console.log(columns);
+            // retrieve api key from prompt
+            let API_KEY = prompt("Please enter your OpenAI API KEY:", "API_KEY");
+            $.ajax({
+                type: "POST",
+                url: "/validate_key",
+                data: {"API_KEY": API_KEY},
+                success: function(valid) {
+                    // console.log(valid, API_KEY);
+                    // start generate table if api key is valid
+                    if (valid == "True") {
+                        // show loader in middle of table
+                        $("#loader").css({"visibility": "visible", "display": "block"});
 
-            // show loader in middle of table
-            $("#loader").css({"visibility": "visible", "display": "block"});
+                        // generate table then hide loader and show download button
+                        generate_table(columns, 10, API_KEY);
+                        } else {
+                        window.alert("Invalid API KEY");
+                    }
+                }
+            })
 
-            // generate table then hide loader and show download button
-            generate_table(columns, 10);
+
         }
     });
 
@@ -48,17 +61,19 @@ $(document).ready(function() {
     })
 });
 
-function generate_table(columns, nrows=10) {
+
+function generate_table(columns, nrows, API_KEY) {
     $.ajax({
         type: "POST",
         url: "/generate_table",
-        data: {"columns": columns, "nrows": nrows},
+        data: {"columns": columns, "nrows": nrows, "API_KEY": API_KEY},
         success: function(data) {
             let rows = data.split("\n\n");
             rows.forEach(row => {
                 row = row.trim();
                 if (row != "") {
-                    row = JSON.parse(row).text;
+                    row = JSON.parse(row.replace("data: ", "")).text;
+                    // console.log(row);
                     let dataHTML = parseTable(row, "td");
                     $("table").append(dataHTML);
                 }

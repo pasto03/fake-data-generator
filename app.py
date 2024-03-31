@@ -20,9 +20,9 @@ def index():
 @app.route("/generate_table", methods=['POST'])
 def generate_table():
     columns = request.form['columns']
-    # print(columns)
     nrows = int(request.form['nrows'])
-    response, _ = generate_csv(columns, nrows=nrows, temperature=1)
+    API_KEY = request.form['API_KEY']
+    response, _ = generate_csv(columns, nrows=nrows, OPENAI_API_KEY=API_KEY, temperature=1)
     return stream_with_context(yield_rows(response))
 
 
@@ -38,6 +38,12 @@ def save_table():
     df.to_csv(save_path, index=None, encoding='utf-8')
     return send_from_directory(directory=FILE_FOLDER, path=filename)
 
+
+@app.route("/validate_key", methods=['POST'])
+def validate_key():
+    api_key = request.form['API_KEY']
+    response, _ = generate_csv("", nrows=1, OPENAI_API_KEY=api_key, temperature=1, max_tokens=5)
+    return str(response != "e")
 
 if __name__ == "__main__":
     app.run(debug=True)
